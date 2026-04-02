@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Nossa História - 3 Anos</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <div class="progress-bar" id="progress"></div>
+
+    <main id="slider">
+        <section class="slide active">
+            <div class="glass-card center">
+                <h1 class="title">3 ANOS FINGINDO TE AMAR</h1>
+                <p>Continuando o seu livro, mas do meu jeitinho...</p>
+                <span class="swipe-hint">Obrigado por ser tão especial na minha vida!</span>
+            </div>
+        </section>
+
+        <section class="slide">
+    <div class="glass-card center">
+        <span class="date">É muito tempo sendo amolada por mim né</span>
+        <h2 style="color: var(--primary); margin-top: 10px;">De sábado em sábado aguentando minhas gracinhas, já são:</h2>
+        
+        <div class="stats-container">
+            <div class="stat-item">
+                <span class="stat-number" id="count-days">0</span>
+                <span class="stat-label">Dias me aguentando</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number" id="count-hours">0</span>
+                <span class="stat-label">Horas com a cara fechada</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">∞</span>
+                <span class="stat-label">Momentos únicos que eu nunca vou esquecer</span>
+            </div>
+        </div>
+
+        <div class="intro-text">
+            <p>Antes de começarem as memórias, se lembre que cada uma dessas fotos representa uma escolha. E eu te escolho diariamente minha princesinha!!!</p>
+        </div>
+
+        <div class="unlock-area">
+            <p style="font-size: 0.8rem; margin-bottom: 10px;">Clique no coração para liberar as memórias</p>
+            <div class="heart-trigger" onclick="avancarPeloCoracao()">❤️</div>
+        </div>
+    </div>
+</section>
+
+        <section class="slide">
+            <div class="glass-card">
+                <span class="date">Julho 2024</span>
+                <div class="photo-grid">
+                    <div class="item"><img src="./fotos/JULHO 1 - 2024.jpg"><p>Fui na sua quadrilha do ensino médio. Ver você ali, feliz, foi muito especial.</p></div>
+                    <div class="item"><img src="./fotos/JULHO 2 - 2024.jpg"><p>Voltamos em Piedade das Gerais e aquele cachorrinho resolveu dormir no meu pé. Pequenos momentos que ficam guardados.</p></div>
+                    <div class="item"><img src="./fotos/JULHO 3 - 2024.jpg"><p>Também fomos no casamento do Tavinho. Mais um momento bom que vivemos juntos.</p></div>
+                </div>
+                <p class="main-text">Julho foi cheio de momentos simples, mas que mostram como é bom viver as coisas ao seu lado.</p>
+            </div>
+        </section>
+
+       <section class="slide">
+            <div class="glass-card">
+                <span class="date">Agosto 2024</span>
+                <div class="photo-grid">
+                    <div class="item"><img src="./fotos/AGOSTO 1 - 2024.jpg"><p>Fomos no aniversário da Mirinha. Nossa primeira festinha fora de Itaúna juntos, e foi muito bom viver isso com você.</p></div>
+                    <div class="item"><img src="./fotos/AGOSTO 2 - 2024.jpg"><p>Um daqueles dias simples na sua casa, abraçados e tirando uma foto aleatória… mas que acaba virando uma lembrança muito boa.</p></div>
+                </div>
+                <p class="main-text">Agosto mostrou que não importa muito o lugar — quando estamos juntos, qualquer momento fica especial.</p>
+            </div>
+        </section>
+
+<section class="slide">
+            <div class="glass-card">
+                <span class="date">Setembro 2024</span>
+                <div class="photo-grid">
+                    <div class="item"><img src="./fotos/SETEMBRO 1 - 2024.jpG"><p>Fomos no aniversário da Lê. Um daqueles rolês simples, mas que acabam sendo muito bons quando estamos juntos.</p></div>
+                </div>
+                <p class="main-text">Mais um mês de momentos simples, mas que ficam muito melhores quando são vividos ao seu lado.</p>
+            </div>
+        </section>
+
+<section class="slide">
+    <div class="glass-card center">
+        <span class="date">Uma Memória Secreta</span>
+        <h2 class="title" style="margin-top: 5px;">Raspe para descobrir</h2>
+        
+        <div class="scratch-container" id="scratch-wrapper">
+    <img src="./fotos/DUDA DINO.jpg" class="hidden-photo">
+    <canvas id="scratchCanvas"></canvas>
+</div>
+        
+        <p class="main-text" id="scratch-text">Passe o dedo para revelar nossa memória escondida...</p>
+    </div>
+</section>
+
+<section class="slide">
+            <div class="glass-card">
+                <span class="date">Outubro 2024</span>
+                <div class="photo-grid">
+                    <div class="item"><img src="./fotos/OUTUBRO 1 - 2024.JPG"><p>A gente, como de costume, tirando foto de zoeira. Porque rir junto sempre foi uma das melhores partes de nós.</p></div>
+                    <div class="item"><img src="./fotos/OUTUBRO 2 - 2024.jpg"><p>Indo no aniversário da Eduarda. Mais um momento simples, mas muito bom.</p></div>
+                </div>
+                <p class="main-text">Outubro foi mais um mês provando que rir juntos sempre vai ser uma das melhores coisas da nossa história.</p>
+            </div>
+        </section>
+
+<section class="slide">
+            <div class="glass-card">
+                <span class="date">Novembro 2024</span>
+                <div class="photo-grid">
+                    <div class="item"><img src="./fotos/NOVEMBRO 1 - 2024.jpg"><p>Fomos em um aniversário em Mateus Leme. Mais um rolê juntos, mais uma memória pra coleção.</p></div>
+                </div>
+                <p class="main-text">Mais um mês adicionando pequenas memórias à nossa história.</p>
+            </div>
+        </section>
+
+<section class="slide">
+            <div class="glass-card">
+                <span class="date">Dezembro 2024</span>
+                <div class="photo-grid">
+                    <div class="item"><img src="./fotos/DEZEMBRO 1 - 2024.jpg"><p>Fui na sua festa de formatura. Foi um dia muito especial.</p></div>
+                    <div class="item"><img src="./fotos/DEZEMBRO 2 - 2024.jpg"><p>Nossa primeira vez (de muitas) indo no Jeffs Burger.</p></div>
+                    <div class="item"><img src="./fotos/DEZEMBRO 3 - 2024.jpg"><p>Passamos a virada do ano na sua casa. Começar um novo ano ao seu lado sempre é algo muito bom.</p></div>
+                </div>
+                <p class="main-text">Encerrar o ano ao seu lado foi a melhor forma possível de começar o próximo.</p>
+            </div>
+        </section>
+
+<section class="slide">
+            <div class="glass-card">
+                <span class="date">Janeiro 2025</span>
+                <div class="photo-grid">
+                    <div class="item"><img src="./fotos/JANEIRO 1 - 2025.jpg"><p>Um dia tranquilo aproveitando a água na sua casa. Momentos simples que fazem tudo valer a pena.</p></div>
+                    <div class="item"><img src="./fotos/JANEIRO 2 - 2025.jpg"><p>Fomos no primeiro show que minha mãe arrastou a gente: um show de pagode em Divinópolis.</p></div>
+                </div>
+                <p class="main-text">Começar o ano vivendo momentos assim só mostra como estar com você sempre vale a pena.</p>
+            </div>
+        </section>
+
+<section class="slide">
+    <div class="glass-card center">
+        <span class="date">Nossa Evolução</span>
+        <h2 class="title">Termômetro do Amor</h2>
+        <p class="main-text">Cada dia que passa, o gráfico só aponta pra cima!</p>
+        
+        <div class="chart-wrapper">
+            <canvas id="loveChart"></canvas>
+        </div>
+        
+        <p class="swipe-hint" style="margin-top: 15px;">Passe o dedo nos pontos para ver os marcos!</p>
+    </div>
+</section>
+
+<section class="slide">
+            <div class="glass-card">
+                <span class="date">Fevereiro 2025</span>
+                <div class="photo-grid">
+                    <div class="item"><img src="./fotos/FEVEREIRO 1 - 2025.JPG"><p>Você fez um bolinho pra mim. Pode parecer simples, mas foi um gesto que me deixou muito feliz.</p></div>
+                </div>
+                <p class="main-text">Às vezes, os gestos mais simples acabam sendo os mais especiais.</p>
+            </div>
+        </section>
+
+<section class="slide">
+            <div class="glass-card">
+                <span class="date">Março 2025</span>
+                <div class="photo-grid">
+                    <div class="item"><img src="./fotos/MARCO 1 - 2025.jpg"><p>Fomos no carnaval. E o melhor: foi o primeiro carnaval da sua vida.</p></div>
+                    <div class="item"><img src="./fotos/MARCO 2 - 2025.jpg"><p>Também fomos no aniversário da Laura, que estava bom demais.</p></div>
+                </div>
+                <p class="main-text">Mais um mês cheio de momentos bons que viraram histórias pra lembrar depois.</p>
+            </div>
+        </section>
+
+<section class="slide">
+            <div class="glass-card">
+                <span class="date">Abril 2025</span>
+                <div class="photo-grid">
+                    <div class="item"><img src="./fotos/ABRIL 2 - 2025.JPEG"><p>Fomos para o sítio com a família da Nina e foi um dia muito bom.</p></div>
+                </div>
+                <p class="main-text">Dias tranquilos assim mostram como a vida pode ser boa quando estamos juntos.</p>
+            </div>
+        </section>
+
+<section class="slide">
+            <div class="glass-card">
+                <span class="date">Maio 2025</span>
+                <div class="photo-grid">
+                    <div class="item"><img src="./fotos/MAIO 1  - 2025.jpg"><p>Fomos comemorar seu aniversário no Bar da Árvore. E nesse dia também andamos de moto juntos pela primeira vez.</p></div>
+                    <div class="item"><img src="./fotos/MAIO 2 - 2025.jpg"><p>Fomos no casamento da sua prima e depois saímos com seus pais.</p></div>
+                </div>
+                <p class="main-text">Momentos importantes e novas experiências que ficaram marcadas na nossa história.</p>
+            </div>
+        </section>
+
+<section class="slide">
+            <div class="glass-card">
+                <span class="date">Junho 2025</span>
+                <div class="photo-grid">
+                    <div class="item"><img src="./fotos/JUNHO 1  - 2025.jpg"><p>Dormi pela primeira vez na roça. Bom demais passar esse tempo com você.</p></div>
+                    <div class="item"><img src="./fotos/JUNHO 2 - 2025.jpg"><p>Nosso segundo Dia dos Namorados — o primeiro oficialmente namorando. Fomos no Anselmo e estava muito bom.</p></div>
+                    <div class="item"><img src="./fotos/JUNHO 3 - 2025.jpg"><p>Nosso segundo aniversário de namoro. Dois anos fingindo que te amo… KKKKKK</p></div>
+                </div>
+                <p class="main-text">Junho foi um mês cheio de momentos importantes para nós dois.</p>
+            </div>
+        </section>
+
+<section class="slide">
+            <div class="glass-card">
+                <span class="date">Julho 2025</span>
+                <div class="photo-grid">
+                    <div class="item"><img src="./fotos/JULHO 1 - 2025.jpg"><p>A gente foi rapidinho depois da prova… aquela semana estava tensa.</p></div>
+                </div>
+                <p class="main-text">Mesmo nas semanas corridas, sempre arrumamos tempo para estar juntos.</p>
+            </div>
+        </section>
+
+<section class="slide">
+            <div class="glass-card">
+                <span class="date">Agosto 2025</span>
+                <div class="photo-grid">
+                    <div class="item"><img src="./fotos/AGOSTO 1 - 2025.jpg"><p>Apesar de eu odiar esse timinho da foto, seu pai é uma ótima pessoa.</p></div>
+                    <div class="item"><img src="./fotos/AGOSTO 2 - 2025.jpg"><p>Um dia antes do passeio, aniversário do marido da minha prima</p></div>
+                    <div class="item"><img src="./fotos/AGOSTO 3 - 2025.jpg"><img src="./fotos/AGOSTO 4 - 2025.jpg"><p>Nosso primeiro passeio sozinhos para fora. Foi um passeio muito bom e tranquilo.</p></div>
+                </div>
+                <p class="main-text">Agosto marcou nosso primeiro passeio só nosso — e foi bom demais viver isso com você.</p>
+            </div>
+        </section>
+
+<section class="slide">
+            <div class="glass-card">
+                <span class="date">Setembro 2025</span>
+                <div class="photo-grid">
+                    <div class="item"><img src="./fotos/SETEMBRO 1 - 2025.jpg"><img src="./fotos/SETEMBRO 2 - 2025.jpg"><p>Impressionante como elas estão crescendo rápido.</p></div>
+                </div>
+                <p class="main-text">Mais um mês passando rápido… mas cheio de bons momentos.</p>
+            </div>
+        </section>
+
+<section class="slide">
+            <div class="glass-card">
+                <span class="date">Outubro 2025</span>
+                <div class="photo-grid">
+                    <div class="item"><img src="./fotos/OUTUBRO 1 - 2025.jpg"><p>Nossa primeira noite de jogos com o pessoal. Foi muito divertido.</p></div>
+                    <div class="item"><img src="./fotos/OUTUBRO 2 - 2025.jpg"><p>Aniversário da nina, e como sempre, passar tempo com você é bom demais.</p></div>
+                </div>
+                <p class="main-text">Outubro trouxe novos rolês e mais momentos bons para a coleção.</p>
+            </div>
+        </section>
+
+<section class="slide">
+            <div class="glass-card">
+                <span class="date">Novembro 2025</span>
+                <div class="photo-grid">
+                    <div class="item"><img src="./fotos/NOVEMBRO 1 - 2025.jpg"><p>Primeira vez que vi você fazendo uma apresentação. E deu pra perceber o quanto você é inteligente e desenrolada.</p></div>
+                    <div class="item"><img src="./fotos/NOVEMBRO 2 - 2025.jpg"><p>Chovia, parava… mas foi muito bom mesmo assim.</p></div>
+                    <div class="item"><img src="./fotos/NOVEMBRO 3 - 2025.jpg"><p>Você fazendo batata frita pra nós. Minha comida favorita.</p></div>
+                    <div class="item"><img src="./fotos/NOVEMBRO 4 - 2025.jpg"><p>Henrique e Juliano aqui em Itaúna. Dispensa comentários kkkkk.</p></div>                
+                </div>
+                <p class="main-text">Novembro teve shows, momentos simples e várias memórias boas.</p>
+            </div>
+        </section>
+
+<section class="slide">
+            <div class="glass-card">
+                <span class="date">Dezembro 2025</span>
+                <div class="photo-grid">
+                    <div class="item"><img src="./fotos/DEZEMBRO 1 - 2025.jpg"><p>Fomos na praça ver as luzes de Natal. Como sempre, estava muito bonito.</p></div>
+                    <div class="item"><img src="./fotos/DEZEMBRO 2 - 2025.jpg"><p>Saímos para a confraternização da empresa. Foi uma noite muito boa.</p></div>
+                </div>
+                <p class="main-text">Mais um ano chegando ao fim e mais memórias boas para guardar.</p>
+            </div>
+        </section>
+
+<section class="slide">
+            <div class="glass-card">
+                <span class="date">Janeiro 2026</span>
+                <div class="photo-grid">
+                    <div class="item"><img src="./fotos/JANEIRO 1 - 2026.jpg"><p>Nossa segunda noite de jogos. Foi bom demais.</p></div>
+                    <div class="item"><img src="./fotos/JANEIRO 2 - 2026.jpg"><p>Fomos no shopping juntos, aproveitando as férias bem tranquilos.</p></div>
+                    <div class="item"><img src="./fotos/JANEIRO 3 - 2026.jpg"><p>Chá de revelação do filho do Tavinho com a Vanessa. O Levi está a caminho.</p></div>
+                </div>
+                <p class="main-text">Começar o ano cercado de amigos e momentos bons sempre é especial.</p>
+            </div>
+        </section>
+
+<section class="slide">
+            <div class="glass-card">
+                <span class="date">Fevereiro 2026</span>
+                <div class="photo-grid">
+                    <div class="item"><img src="./fotos/FEVEREIRO 1 - 2026.jpg"><p>Fomos no carnaval com nossa turminha de sempre. Os rolês sempre são bons.</p></div>
+                    <div class="item"><img src="./fotos/FEVEREIRO 2 - 2026.jpg"><p>Aniversário da Laura, fomos no Jeffs e depois BK. Estava muito bom.</p></div>
+                </div>
+                <p class="main-text">Mais um mês simples, mas cheio de momentos que fazem nossa história continuar crescendo.</p>
+            </div>
+        </section>
+
+<section class="slide">
+            <div class="glass-card">
+                <span class="date">Março 2026</span>
+                <div class="photo-grid">
+                    <div class="item"><img src="./fotos/MARÇO 1 - 2026.JPEG"><p>Passando o dia na sua casa, e novamente te amolando. Eu amo fazer isso</p></div>
+                </div>
+                <p class="main-text">Esse mês não tivemos muitos registros, mas muitas memórias inesquecíveis assim como cada dia é ao seu lado.</p>
+            </div>
+        </section>
+
+ <section class="slide">
+            <div class="glass-card">
+                <span class="date">Abril 2026</span>
+                <div class="photo-grid">
+                    <div class="item"><img src="./fotos/ABRIL 1 - 2026.jpg"><p>Sua quadrilha no ensino médio ❤️</p></div>
+                    <div class="item"><img src="./fotos/ABRIL 2 - 2026.jpg"><p>O cachorrinho em Piedade dormindo no meu pé</p></div>
+                    <div class="item"><img src="./fotos/ABRIL 3 - 2026.jpg"><p>Casamento do Tavinho</p></div>
+                </div>
+                <p class="main-text">Ver você feliz na quadrilha foi especial. Pequenos momentos que ficam guardados.</p>
+            </div>
+        </section>
+
+        <section class="slide">
+            <div class="glass-card">
+                <span class="date">Maio 2026</span>
+                <div class="photo-grid">
+                    <div class="item"><img src="./fotos/MAIO 1 - 2026.jpg"><p>Sua quadrilha no ensino médio ❤️</p></div>
+                    <div class="item"><img src="./fotos/MAIO 2 - 2026.jpg"><p>O cachorrinho em Piedade dormindo no meu pé</p></div>
+                    <div class="item"><img src="./fotos/MAIO 3 - 2026.jpg"><p>Casamento do Tavinho</p></div>
+                </div>
+                <p class="main-text">Ver você feliz na quadrilha foi especial. Pequenos momentos que ficam guardados.</p>
+            </div>
+        </section>
+
+        <section class="slide">
+            <div class="glass-card">
+                <span class="date">Junho 2026</span>
+                <div class="photo-grid">
+                    <div class="item"><img src="./fotos/JUNHO 1 - 2026.jpg"><p>Sua quadrilha no ensino médio ❤️</p></div>
+                    <div class="item"><img src="./fotos/JUNHO 2 - 2026.jpg"><p>O cachorrinho em Piedade dormindo no meu pé</p></div>
+                    <div class="item"><img src="./fotos/JUNHO 3 - 2026.jpg"><p>Casamento do Tavinho</p></div>
+                </div>
+                <p class="main-text">Ver você feliz na quadrilha foi especial. Pequenos momentos que ficam guardados.</p>
+            </div>
+        </section>
+
+        
+        <section class="slide">
+            <div class="glass-card center">
+                <h1 class="title">Feliz 3 Anos!</h1>
+                <p>24 de Junho de 2026</p>
+                <div class="item"><img src="fotos/final.jpg"><p>Para sempre nós dois.</p></div>
+                <p>O Levi está vindo e nossa história está só começando. Te amo!</p>
+            </div>
+        </section>
+    </main>
+
+    <nav class="controls">
+        <button id="prevBtn">❮</button>
+        <button id="nextBtn">❯</button>
+    </nav>
+
+    <script src="script.js"></script>
+</body>
+</html>
