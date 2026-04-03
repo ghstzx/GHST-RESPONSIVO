@@ -5,41 +5,50 @@ const prevBtn = document.getElementById('prevBtn');
 const nextBtn = document.getElementById('nextBtn');
 const progressBar = document.getElementById('progress');
 
-// Tenta carregar o slide salvo. Se não houver, começa do 0.
-let currentSlide = parseInt(localStorage.getItem('capituloSalvo')) || 0;
+let currentSlide = parseInt(sessionStorage.getItem('capituloSalvo')) || 0;
 
-// 2. FUNÇÃO PRINCIPAL DE ATUALIZAÇÃO
+// 2. FUNÇÃO PRINCIPAL DE ATUALIZAÇÃO (única e definitiva)
 function update() {
-    // Salva a posição atual no navegador para não perder ao atualizar
-    localStorage.setItem('capituloSalvo', currentSlide);
-
-    // Move o carrossel
+    sessionStorage.setItem('capituloSalvo', currentSlide);
     slider.style.transform = `translateX(-${currentSlide * 100}vw)`;
-    
-    // Gerencia a classe 'active' para as animações de escala e opacidade
+
     slides.forEach((slide, index) => {
-        if (index === currentSlide) {
-            slide.classList.add('active');
-        } else {
-            slide.classList.remove('active');
-        }
+        index === currentSlide ? slide.classList.add('active') : slide.classList.remove('active');
     });
 
-    // Atualiza estado dos botões
-    prevBtn.disabled = currentSlide === 0;
+    // Esconde as setas nos slides 0 e 1
+if (currentSlide === 0 || currentSlide === 1) {
+    prevBtn.style.visibility = 'hidden';
+    nextBtn.style.visibility = 'hidden';
+    prevBtn.style.pointerEvents = 'none';
+    nextBtn.style.pointerEvents = 'none';
+} else {
+    prevBtn.style.visibility = 'visible';
+    nextBtn.style.visibility = 'visible';
+    prevBtn.style.pointerEvents = 'auto';
+    nextBtn.style.pointerEvents = 'auto';
+    prevBtn.disabled = false;
     nextBtn.disabled = currentSlide === slides.length - 1;
+    nextBtn.disabled = currentSlide === slides.length - 1;
+}
 
-    // Atualiza barra de progresso
+    // Barra de progresso
     const progress = (currentSlide / (slides.length - 1)) * 100;
     progressBar.style.width = `${progress}%`;
 
-    // Dispara animação de números no slide 1
+    // Efeitos especiais por slide
     if (currentSlide === 1) {
         setTimeout(animateCounters, 600);
     }
+    if (slides[currentSlide].querySelector('#scratchCanvas')) {
+        setTimeout(initScratch, 600);
+    }
+    if (slides[currentSlide].querySelector('#loveChart')) {
+        setTimeout(initLoveChart, 600);
+    }
 }
 
-// 3. FUNÇÕES DE NAVEGAÇÃO
+// 3. NAVEGAÇÃO
 function nextSlide() {
     if (currentSlide < slides.length - 1) {
         currentSlide++;
@@ -58,7 +67,7 @@ function avancarPeloCoracao() {
     nextSlide();
 }
 
-// 4. EVENTOS (CLIQUE, TECLADO, SWIPE)
+// 4. EVENTOS
 nextBtn.addEventListener('click', nextSlide);
 prevBtn.addEventListener('click', prevSlide);
 
@@ -67,37 +76,20 @@ document.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowLeft') prevSlide();
 });
 
-// Suporte para deslizar o dedo no celular
-let touchstartX = 0;
-let touchendX = 0;
-
-document.addEventListener('touchstart', e => {
-    touchstartX = e.changedTouches[0].screenX;
-}, {passive: true});
-
-document.addEventListener('touchend', e => {
-    touchendX = e.changedTouches[0].screenX;
-    const swipeDistance = touchstartX - touchendX;
-    if (swipeDistance > 50) nextSlide();
-    if (swipeDistance < -50) prevSlide();
-}, {passive: true});
-
-// 5. LÓGICA DO CONTADOR
+// 5. CONTADOR
 function animateCounters() {
     const dataInicio = new Date("2023-06-24");
     const hoje = new Date();
     const diffEmMs = hoje - dataInicio;
     const diasTotal = Math.floor(diffEmMs / (1000 * 60 * 60 * 24));
     const horasTotal = diasTotal * 24;
-
     animateValue("count-days", 0, diasTotal, 2000);
     animateValue("count-hours", 0, horasTotal, 2000);
 }
 
 function animateValue(id, start, end, duration) {
     const obj = document.getElementById(id);
-    if (!obj || obj.dataset.animated === "true") return; 
-    
+    if (!obj || obj.dataset.animated === "true") return;
     obj.dataset.animated = "true";
     let startTimestamp = null;
     const step = (timestamp) => {
@@ -109,44 +101,7 @@ function animateValue(id, start, end, duration) {
     window.requestAnimationFrame(step);
 }
 
-// 6. INICIALIZAÇÃO
-update();
-
-function update() {
-    localStorage.setItem('capituloSalvo', currentSlide);
-    slider.style.transform = `translateX(-${currentSlide * 100}vw)`;
-    
-    slides.forEach((slide, index) => {
-        if (index === currentSlide) {
-            slide.classList.add('active');
-        } else {
-            slide.classList.remove('active');
-        }
-    });
-
-    prevBtn.disabled = currentSlide === 0;
-    nextBtn.disabled = currentSlide === slides.length - 1;
-    const progress = (currentSlide / (slides.length - 1)) * 100;
-    progressBar.style.width = `${progress}%`;
-
-    // Contador da página 2
-    if (currentSlide === 1) {
-        setTimeout(animateCounters, 600);
-    }
-    
-    // NOVO: Inicia a raspadinha se a tela atual tiver uma (evita carregar antes da hora)
-    if (slides[currentSlide].querySelector('#scratchCanvas')) {
-        setTimeout(initScratch, 600);
-    }
-    
-    // COLE ISSO AQUI:
-    if (slides[currentSlide].querySelector('#loveChart')) {
-        setTimeout(initLoveChart, 600);
-    }
-    
-}
-
-// --- LÓGICA DA RASPADINHA PRO ---
+// 6. RASPADINHA
 let isScratching = false;
 let scratchInitialized = false;
 
@@ -154,95 +109,68 @@ function initScratch() {
     const canvas = document.getElementById('scratchCanvas');
     const container = document.getElementById('scratch-wrapper');
     if (!canvas || !container || scratchInitialized) return;
-
     const ctx = canvas.getContext('2d', { willReadFrequently: true });
-    
-    // Ajusta o tamanho do canvas para o tamanho exato da div
     canvas.width = container.offsetWidth;
     canvas.height = container.offsetHeight;
-
-    // Pinta a camada por cima (cor sólida)
-    ctx.fillStyle = '#b3b3b3'; // Um cinza elegante
+    ctx.fillStyle = '#b3b3b3';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    // Adiciona um texto por cima da tinta
     ctx.font = '20px Segoe UI';
     ctx.fillStyle = '#666';
     ctx.textAlign = 'center';
     ctx.fillText('Raspe aqui', canvas.width / 2, canvas.height / 2);
 
-    // Função que "apaga" a tinta
     function scratch(e) {
         if (!isScratching) return;
-        
-        // Evita que a tela role no celular enquanto raspa
-        e.preventDefault(); 
-
+        e.preventDefault();
         const rect = canvas.getBoundingClientRect();
         const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
         const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
-
-        // "Apaga" fazendo um círculo transparente
         ctx.globalCompositeOperation = 'destination-out';
         ctx.beginPath();
-        ctx.arc(x, y, 25, 0, Math.PI * 2); // 25 é a grossura do "dedo"
+        ctx.arc(x, y, 25, 0, Math.PI * 2);
         ctx.fill();
-
         checkReveal();
     }
 
-    // Função PRO: Checa se já raspou 50%
-    // Usamos um throttle básico (pulando alguns pixels) para não travar o celular
     function checkReveal() {
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
         const pixels = imageData.data;
         let transparentPixels = 0;
-        
-        // Pula de 4 em 4 para checar só o canal Alpha (transparência)
-        for (let i = 3; i < pixels.length; i += 16) { 
+        for (let i = 3; i < pixels.length; i += 16) {
             if (pixels[i] === 0) transparentPixels++;
         }
-
         const totalCheckedPixels = pixels.length / 16;
         const percentScratched = (transparentPixels / totalCheckedPixels) * 100;
-
-        // Se raspou 40% a 50%, revela o resto!
         if (percentScratched > 45) {
             container.classList.add('scratch-revealed');
             document.getElementById('scratch-text').innerHTML = "O dinossauro mais lindo que eu já vi na vida. Te amo minha lindona! ❤️";
-            isScratching = false; // Para de calcular
+            isScratching = false;
         }
     }
 
-    // Eventos de Mouse (PC)
     canvas.addEventListener('mousedown', () => isScratching = true);
     canvas.addEventListener('mouseup', () => isScratching = false);
     canvas.addEventListener('mousemove', scratch);
-
-    // Eventos de Toque (Celular)
-    canvas.addEventListener('touchstart', (e) => {
-        isScratching = true;
-        scratch(e); // Já pinta no primeiro toque
-    }, {passive: false});
+    canvas.addEventListener('touchstart', (e) => { isScratching = true; scratch(e); }, { passive: false });
     canvas.addEventListener('touchend', () => isScratching = false);
-    canvas.addEventListener('touchmove', scratch, {passive: false});
-
+    canvas.addEventListener('touchmove', scratch, { passive: false });
+    container.classList.add('scratch-ready');
     scratchInitialized = true;
 }
 
+// 7. GRÁFICO
 let myLoveChart = null;
 
 function initLoveChart() {
     const ctx = document.getElementById('loveChart');
-    if (!ctx || myLoveChart) return; 
-
+    if (!ctx || myLoveChart) return;
     myLoveChart = new Chart(ctx, {
         type: 'line',
         data: {
             labels: ['26/05/2023', '24/06/2023', '24/06/2024', '24/06/2026', 'Futuro'],
             datasets: [{
                 label: 'Nível de Felicidade',
-                data: [30, 60, 85, 100, 140], 
+                data: [30, 60, 85, 100, 140],
                 borderColor: '#ff4d6d',
                 backgroundColor: 'rgba(255, 77, 109, 0.2)',
                 fill: true,
@@ -279,3 +207,25 @@ function initLoveChart() {
         }
     });
 }
+
+// 8. PARTÍCULAS
+function createParticles() {
+    const container = document.getElementById('particles');
+    if (!container) return;
+    const heartSymbols = ['❤️', '✨', '🌸', '💕'];
+    for (let i = 0; i < 15; i++) {
+        const particle = document.createElement('span');
+        particle.className = 'particle';
+        particle.innerHTML = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+        particle.style.left = Math.random() * 100 + 'vw';
+        particle.style.animationDuration = (Math.random() * 3 + 4) + 's';
+        particle.style.fontSize = (Math.random() * 15 + 10) + 'px';
+        particle.style.animationDelay = Math.random() * 5 + 's';
+        container.appendChild(particle);
+    }
+}
+
+window.addEventListener('load', createParticles);
+
+// 9. INICIALIZAÇÃO
+update();
