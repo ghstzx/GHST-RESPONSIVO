@@ -10,15 +10,22 @@
     -webkit-tap-highlight-color: transparent;
 }
 
+/* DEPOIS */
 body {
     margin: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: var(--bg-gradient);
     height: 100vh;
     width: 100vw;
-    overflow: hidden; /* Importante para o efeito de capítulos */
+    overflow: hidden;
     color: #444;
-    position: fixed; /* Evita bugs de "puxar para atualizar" no celular */
+}
+
+html {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
 }
 
 /* 2. BARRA DE PROGRESSO */
