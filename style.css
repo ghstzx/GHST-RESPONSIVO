@@ -185,11 +185,17 @@ button:disabled { background: #d1d1d1; box-shadow: none; cursor: not-allowed; }
 .hidden-photo {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Corta a foto inteligentemente para preencher o espaço */
-    object-position: center; /* Centraliza o rosto das pessoas na foto */
+    object-fit: cover;
+    object-position: center;
     position: absolute;
     top: 0; left: 0;
     z-index: 1;
+    opacity: 0; /* Esconde por padrão */
+    transition: opacity 0.3s ease;
+}
+
+.scratch-ready .hidden-photo {
+    opacity: 1; /* Só aparece quando o JS adicionar a classe */
 }
 
 #scratchCanvas {
@@ -223,4 +229,76 @@ button:disabled { background: #d1d1d1; box-shadow: none; cursor: not-allowed; }
 #loveChart {
     width: 100% !important;
     height: 100% !important;
+}
+
+/* --- EFEITO UAU: CAPA INICIAL --- */
+.main-cover {
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 0 30px rgba(255, 77, 109, 0.2);
+    animation: floatingCard 4s ease-in-out infinite;
+}
+
+.glow-text {
+    text-shadow: 0 0 10px rgba(255, 77, 109, 0.5);
+    font-size: 2.2rem !important;
+}
+
+.heart-icon {
+    font-size: 3rem;
+    margin-bottom: 10px;
+    filter: drop-shadow(0 0 5px var(--primary));
+}
+
+.divider {
+    height: 2px;
+    width: 50px;
+    background: var(--primary);
+    margin: 15px auto;
+}
+
+/* Partículas no fundo */
+.bg-particles {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    overflow: hidden;
+    z-index: -1;
+}
+
+.particle {
+    position: absolute;
+    color: var(--primary);
+    opacity: 0.3;
+    animation: rise 6s linear infinite;
+}
+
+/* Botão Pulsante */
+.pulse-button {
+    margin-top: 20px;
+    padding: 12px 25px;
+    background: var(--primary);
+    color: white;
+    border-radius: 50px;
+    font-weight: bold;
+    font-size: 0.9rem;
+    cursor: pointer;
+    animation: pulse 2s infinite;
+    display: inline-block;
+}
+
+/* ANIMAÇÕES */
+@keyframes rise {
+    0% { transform: translateY(110vh) rotate(0deg); opacity: 0; }
+    50% { opacity: 0.5; }
+    100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+}
+
+@keyframes floatingCard {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 77, 109, 0.7); }
+    70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(255, 77, 109, 0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 77, 109, 0); }
 }
