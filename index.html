@@ -32,7 +32,7 @@
       <h2 style="color:var(--primary);margin-top:10px;">De sábado em sábado aguentando minhas gracinhas, já são:</h2>
       <div class="stats-container">
         <div class="stat-item"><span class="stat-number" id="count-days">0</span><span class="stat-label">Dias me aguentando</span></div>
-        <div class="stat-item"><span class="stat-number" id="count-hours">0</span><span class="stat-label">Horas com a cara fechada</span></div>
+        <div class="stat-item"><span class="stat-number stat-number--sm" id="count-hours">0</span><span class="stat-label">Semanas me aguentando</span></div>
         <div class="stat-item"><span class="stat-number">∞</span><span class="stat-label">Momentos únicos que eu nunca vou esquecer</span></div>
       </div>
       <div class="unlock-area">
@@ -128,7 +128,7 @@
       <div class="uv-phase" id="uvIntro">
         <p class="uv-eyebrow">uma perspectiva</p>
         <h2 class="uv-big-title">O Universo</h2>
-        <p class="uv-tap-hint">toque para continuar</p>
+        <p class="uv-tap-hint" style="display:none">toque para continuar</p>
       </div>
 
       <!-- FASE 1: NÚMEROS -->
@@ -283,7 +283,6 @@
         <p class="const-line const-line-hidden" id="cL2">Eu olhei lá pra cima...<br>e vi muito mais do que uma.</p>
         <p class="const-line const-line-bold const-line-hidden" id="cL3">Vi o seu nome.</p>
       </div>
-      <p class="const-tap" id="constTap" style="opacity:0">toque para continuar</p>
     </div>
 
     <!-- FASE 1: animação canvas -->
@@ -398,41 +397,70 @@
     <p class="main-text">Mais um ano chegando ao fim e mais memórias boas para guardar.</p>
   </div></section>
 
-  <!-- SLIDE MAPA — 8 BILHÕES -->
+  <!-- SLIDE MAPA -->
   <section class="slide slide-mapa">
-    <canvas id="mapaCanvas"></canvas>
+    <div class="mp-bg-stars" id="mpBgStars"></div>
     <div class="mapa-blob mp-1"></div>
     <div class="mapa-blob mp-2"></div>
-    <div class="mapa-stage">
 
-      <!-- FASE 0: texto intro -->
-      <div class="mp-phase" id="mpIntro">
-        <div class="mp-intro-card">
-          <p class="mp-line" id="mpL1">São 8 bilhões de pessoas no mundo.</p>
-          <p class="mp-line mp-line-hidden" id="mpL2">Cada uma com sua história,<br>seu caminho, seu momento.</p>
-          <p class="mp-line mp-line-hidden" id="mpL3">E de alguma forma<br>o seu caminho cruzou com o meu.</p>
-          <p class="mp-line mp-line-bold mp-line-hidden" id="mpL4">Não foi por acaso.</p>
-        </div>
-        <p class="mp-tap" id="mpTap" style="opacity:0">toque para continuar</p>
+    <!-- FASE 0: texto intro -->
+    <div class="mp-phase" id="mpIntro">
+      <div class="mp-intro-card">
+        <p class="mp-line" id="mpL1">São 8 bilhões de pessoas no mundo.</p>
+        <p class="mp-line mp-line-hidden" id="mpL2">Cada uma com sua história,<br>seu caminho, seu momento.</p>
+        <p class="mp-line mp-line-hidden" id="mpL3">E de alguma forma<br>o seu caminho cruzou com o meu.</p>
+        <p class="mp-line mp-line-bold mp-line-hidden" id="mpL4">Não foi por acaso.</p>
       </div>
-
-      <!-- FASE 1: mapa animado -->
-      <div class="mp-phase mp-hide" id="mpMap">
-        <p class="mp-map-hint" id="mpMapHint">encontrando você no mundo...</p>
-      </div>
-
-      <!-- FASE 2: frase final -->
-      <div class="mp-phase mp-hide" id="mpEnd">
-        <div class="mp-final-card">
-          <div class="mp-pin-icon">📍</div>
-          <p class="mp-final-city">Itaúna — MG</p>
-          <p class="mp-final-main">foi aqui que tudo começou.</p>
-          <p class="mp-final-sub">de 8 bilhões de caminhos possíveis,<br>o seu veio parar no meu.<br><em>não foi por acaso.</em></p>
-        </div>
-      </div>
-
     </div>
-    <button class="mp-btn" id="mpBtn">✦</button>
+
+    <!-- FASE 1: mapa SVG -->
+    <div class="mp-phase mp-hide mp-map-phase" id="mpMap">
+      <svg id="mpSvg" class="mp-svg" viewBox="0 0 300 380" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="mpGlow">
+            <feGaussianBlur stdDeviation="3" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+
+        <!-- Contorno real do Brasil (coordenadas geográficas convertidas) -->
+        <path id="mpBrasilPath" class="mp-brasil-path" d="M169.2,10.9 L172.8,16.6 L165.6,21.3 L159.8,31.6 L155.4,37.3 L151.1,41.0 L147.5,45.7 L145.3,50.4 L176.4,54.2 L183.6,61.7 L187.3,66.4 L217.6,71.1 L221.3,75.8 L237.9,78.6 L263.2,85.2 L271.9,97.4 L281.3,100.2 L287.1,104.0 L288.6,108.7 L289.3,120.0 L289.3,127.5 L282.8,140.7 L277.7,146.3 L272.6,155.7 L274.1,167.9 L260.3,174.5 L259.6,183.9 L258.2,193.3 L258.9,202.7 L258.2,212.1 L256.0,221.5 L252.4,237.5 L243.7,247.8 L245.1,259.1 L229.2,267.5 L221.3,268.5 L213.3,273.2 L201.7,277.9 L195.2,282.6 L190.2,291.0 L189.4,301.4 L190.9,311.7 L190.2,320.2 L181.5,324.9 L171.3,336.2 L170.6,343.7 L164.8,351.2 L158.3,362.5 L155.4,370.0 L165.6,367.2 L176.4,334.3 L181.5,320.2 L176.4,306.1 L160.5,296.7 L152.5,292.0 L147.5,287.3 L151.1,277.9 L154.7,273.2 L143.9,263.8 L136.6,254.4 L125.8,245.0 L124.3,235.6 L124.3,221.5 L125.8,216.8 L122.1,212.1 L118.5,207.4 L107.7,198.0 L104.1,183.9 L100.4,179.2 L96.8,169.8 L94.7,155.7 L89.6,146.3 L83.8,141.6 L76.6,136.9 L82.4,132.2 L84.5,127.5 L78.7,122.8 L71.5,118.1 L64.3,113.4 L53.4,108.7 L44.0,99.3 L35.3,89.9 L28.1,80.5 L20.9,71.1 L13.6,61.7 L10.0,57.0 L20.9,52.3 L35.3,47.6 L38.9,42.9 L49.8,38.2 L60.6,33.5 L78.7,28.8 L93.2,24.1 L100.4,19.4 L104.1,14.7 L107.7,10.9 L114.9,10.9 L111.3,16.6 L114.9,28.8 L118.5,38.2 L114.9,47.6 L111.3,53.2 L155.4,37.3 L169.2,10.9 Z"/>
+
+        <!-- Pontos das cidades -->
+        <g id="mpDots"></g>
+
+        <!-- Linhas de viagem -->
+        <line id="mpLineA" x1="204.6" y1="273.2" x2="204.6" y2="273.2" stroke="rgba(255,77,109,0.5)" stroke-width="1" stroke-dasharray="4,5"/>
+        <line id="mpLineB" x1="224.2" y1="239.3" x2="224.2" y2="239.3" stroke="rgba(255,180,192,0.5)" stroke-width="1" stroke-dasharray="4,5"/>
+
+        <!-- Ponto de encontro — Itaúna (219.3, 240.9) -->
+        <g id="mpMeetPoint" opacity="0">
+          <circle class="mp-ring mp-r1" cx="219.3" cy="240.9" r="3"/>
+          <circle class="mp-ring mp-r2" cx="219.3" cy="240.9" r="3"/>
+          <circle class="mp-ring mp-r3" cx="219.3" cy="240.9" r="3"/>
+          <circle cx="219.3" cy="240.9" r="5" fill="rgba(255,77,109,0.3)" filter="url(#mpGlow)"/>
+          <circle cx="219.3" cy="240.9" r="3" fill="#ff4d6d"/>
+          <circle cx="219.3" cy="240.9" r="1.5" fill="#fff"/>
+          <text x="219.3" y="231" class="mp-city-text">Itaúna — MG</text>
+        </g>
+
+        <!-- Pontos viajantes -->
+        <circle id="mpDotA" cx="204.6" cy="273.2" r="3" fill="#ff4d6d" opacity="0"/>
+        <circle id="mpDotB" cx="224.2" cy="239.3" r="3" fill="#ffb3c0" opacity="0"/>
+      </svg>
+    </div>
+
+    <!-- FASE 2: frase final -->
+    <div class="mp-phase mp-hide" id="mpEnd">
+      <div class="mp-final-card">
+        <div class="mp-pin-icon">📍</div>
+        <p class="mp-final-city">Itaúna — MG</p>
+        <p class="mp-final-main">foi aqui que tudo começou.</p>
+        <p class="mp-final-sub">de todos os caminhos possíveis,<br>o seu veio parar no meu.<br><em>não foi por acaso.</em></p>
+      </div>
+    </div>
+
+    <button class="mp-btn" id="mpBtn" style="opacity:0">✦</button>
   </section>
 
   <!-- SLIDE 23: JANEIRO 2026 -->
