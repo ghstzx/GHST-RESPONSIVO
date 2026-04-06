@@ -53,7 +53,7 @@ function animateCounters() {
   const diff = Date.now() - new Date('2023-06-24').getTime();
   const days = Math.floor(diff / 86400000);
   animateValue('count-days',  0, days,      2000);
-  animateValue('count-hours', 0, days * 24, 2000);
+  animateValue('count-hours', 0, Math.floor(days / 7), 2000);
 }
 
 function animateValue(id, start, end, duration) {
@@ -64,7 +64,7 @@ function animateValue(id, start, end, duration) {
   const step = ts => {
     if (!t0) t0 = ts;
     const p = Math.min((ts - t0) / duration, 1);
-    el.textContent = Math.floor(p * (end - start) + start).toLocaleString();
+    el.textContent = Math.floor(p * (end - start) + start).toLocaleString('pt-BR');
     if (p < 1) requestAnimationFrame(step);
   };
   requestAnimationFrame(step);
@@ -842,288 +842,156 @@ function wmpEndMsg(s, t) {
 })();
 
 // ══════════════════════════════════════════
-// SLIDE MAPA — 8 BILHÕES
+// SLIDE MAPA
 // ══════════════════════════════════════════
 (function () {
 
   const slide = document.querySelector('.slide-mapa');
   if (!slide) return;
 
-  let ready = false, bgAnim = null, mapAnim = null, phase = 0;
-  let stars = [], shoots = [];
+  let ready = false, phase = 0, animId = null;
 
   new MutationObserver(() => {
-    const on = slide.classList.contains('active');
-    if (on && !ready) init();
-    if (!on && bgAnim)  { cancelAnimationFrame(bgAnim);  bgAnim = null; }
-    if (!on && mapAnim) { cancelAnimationFrame(mapAnim); mapAnim = null; }
-    if (on && ready && !bgAnim) drawStars();
-  }).observe(slide, { attributes: true, attributeFilter: ['class'] });
+  if (slide.classList.contains('active')) {
+    if (!ready) { init(); }
+    else { resetMapa(); }
+  }
+}).observe(slide, { attributes: true, attributeFilter: ['class'] });
+
+  // ─── ESTRELAS CSS ───
+  function createStars() {
+    const c = document.getElementById('mpBgStars');
+    if (!c || c.children.length) return;
+    for (let i = 0; i < 70; i++) {
+      const s = document.createElement('div');
+      s.className = 'mp-star';
+      const sz = Math.random() * 1.8 + .4;
+      s.style.cssText = `width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--dur:${2+Math.random()*4}s;--delay:${Math.random()*6}s;--min-op:${(.04+Math.random()*.12).toFixed(2)};--max-op:${(.3+Math.random()*.5).toFixed(2)};`;
+      c.appendChild(s);
+    }
+  }
 
   function init() {
     ready = true; phase = 0;
-    setupCanvas(); drawStars();
+    createStars();
     showPhase('mpIntro');
     startIntroLines();
     document.getElementById('mpBtn').addEventListener('click', advance);
-    slide.addEventListener('click', e => {
-      if (e.target === document.getElementById('mpBtn')) return;
-      if (phase < 2) advance();
-    });
   }
 
-  // ─── ESTRELAS DE FUNDO ───
-  function setupCanvas() {
-    const c = document.getElementById('mapaCanvas');
-    c.width  = slide.offsetWidth  || window.innerWidth;
-    c.height = slide.offsetHeight || window.innerHeight;
-    stars = [];
-    const n = Math.floor((c.width * c.height) / 4200);
-    for (let i = 0; i < n; i++) {
-      const b = Math.random()*.4+.1;
-      stars.push({ x:Math.random()*c.width, y:Math.random()*c.height,
-        r:Math.random()*1.3+.2, op:b, base:b, dir:1, sp:Math.random()*.01+.003 });
-    }
-  }
-
-  function drawStars() {
-    const c = document.getElementById('mapaCanvas');
-    if (!c) return;
-    const ctx = c.getContext('2d');
-    ctx.clearRect(0,0,c.width,c.height);
-    stars.forEach(s => {
-      s.op += s.sp*s.dir;
-      if (s.op>s.base+.28||s.op<s.base-.1) s.dir*=-1;
-      ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
-      ctx.fillStyle=`rgba(255,255,255,${Math.max(0,Math.min(1,s.op))})`; ctx.fill();
-    });
-    if (Math.random()>.997) shoots.push({
-      x:Math.random()*c.width, y:Math.random()*c.height*.4,
-      vx:3+Math.random()*4, vy:1.2+Math.random()*2,
-      len:60+Math.random()*80, life:1
-    });
-    shoots = shoots.filter(s=>s.life>0);
-    shoots.forEach(s=>{
-      const g=document.getElementById('mapaCanvas').getContext('2d')
-        .createLinearGradient(s.x,s.y,s.x-s.len,s.y-s.len*.4);
-      g.addColorStop(0,`rgba(200,180,255,${s.life})`);
-      g.addColorStop(1,'rgba(255,255,255,0)');
-      ctx.beginPath(); ctx.moveTo(s.x,s.y); ctx.lineTo(s.x-s.len,s.y-s.len*.4);
-      ctx.strokeStyle=g; ctx.lineWidth=1.3; ctx.stroke();
-      s.x+=s.vx; s.y+=s.vy; s.life-=.025;
-    });
-    bgAnim = requestAnimationFrame(drawStars);
-  }
-
-  // ─── FASE 0: linhas de texto ───
+  // ─── FASE 0 ───
   function startIntroLines() {
     [['mpL2',1100],['mpL3',2300],['mpL4',3600]].forEach(([id,delay]) => {
-      setTimeout(()=>{ const el=document.getElementById(id); if(el) el.classList.add('mp-line-show'); }, delay);
+      setTimeout(() => {
+        const el = document.getElementById(id);
+        if (el) el.classList.add('mp-line-show');
+      }, delay);
     });
-    setTimeout(()=>{ const t=document.getElementById('mpTap'); if(t) t.style.opacity='1'; }, 4800);
+    setTimeout(() => {
+      const btn = document.getElementById('mpBtn');
+      if (btn) btn.style.opacity = '1';
+    }, 10);
   }
 
-  // ─── FASE 1: MAPA ───
-  function drawMap() {
-    const c = document.getElementById('mapaCanvas');
-    if (!c) return;
-    const ctx = c.getContext('2d');
-    const W = c.width, H = c.height;
+  // ─── FASE 1: ANIMAÇÃO SVG ───
+  function animateMap() {
+    const svg = document.getElementById('mpSvg');
+    if (!svg) return;
 
-    const MAP_W = W * .92;
-    const MAP_H = MAP_W * .5;
-    const MAP_X = (W - MAP_W) / 2;
-    const MAP_Y = (H - MAP_H) / 2 - H * .04;
+    // Coordenadas no viewBox 300x380 (geradas matematicamente das lat/lon reais)
+    const ITAUNA = { x: 219.3, y: 240.9 };
+    const SP     = { x: 204.6, y: 273.2 };
+    const BH     = { x: 224.2, y: 239.3 };
 
-    function geo(lat, lon) {
-      return {
-        x: MAP_X + ((lon+180)/360)*MAP_W,
-        y: MAP_Y + ((90-lat)/180)*MAP_H
-      };
-    }
-
-    // Pontos de população mundo
-    const worldPts = [
-      [-23.5,-46.6],[-22.9,-43.2],[-19.9,-43.9],[-15.8,-47.9],[-20.07,-44.57],
-      [-12.9,-38.3],[-3.7,-38.5],[-8.0,-34.9],[-1.4,-48.5],[-3.1,-60.0],
-      [-34.6,-58.4],[-33.5,-70.7],[-0.2,-78.5],[4.7,-74.1],[10.5,-66.9],
-      [40.7,-74.0],[34.0,-118.2],[41.8,-87.6],[29.7,-95.3],[33.7,-84.4],
-      [19.4,-99.1],[9.1,-79.4],[14.1,-87.2],[23.1,-82.4],[18.5,-69.9],
-      [51.5,-0.1],[48.8,2.3],[52.5,13.4],[41.9,12.5],[40.4,-3.7],
-      [38.7,-9.1],[37.9,23.7],[44.8,20.5],[50.4,30.5],[55.7,37.6],
-      [59.9,30.3],[55.6,12.6],[53.3,-6.2],[45.4,9.2],[47.4,8.5],
-      [30.0,31.2],[33.9,-6.8],[36.8,10.2],[14.7,-17.4],[5.6,-0.2],
-      [6.4,3.4],[-1.3,36.8],[-8.8,13.2],[-25.9,32.6],[-33.9,18.4],
-      [-4.3,15.3],[0.4,9.5],[12.1,15.0],[15.5,32.5],[-18.9,47.5],
-      [39.9,116.4],[31.2,121.5],[23.1,113.3],[28.6,77.2],[19.1,72.9],
-      [12.9,77.6],[1.3,103.8],[13.8,100.5],[21.0,105.8],[37.6,126.9],
-      [35.7,139.7],[34.7,135.5],[24.9,67.0],[23.7,90.4],[3.1,101.7],
-      [41.0,28.9],[31.8,35.2],[24.7,46.7],[25.2,55.3],[15.3,38.9],
-      [-33.8,151.2],[-37.8,145.0],[-27.5,153.0],[-31.9,115.9],[-36.8,174.8],
+    // Cidades — coordenadas SVG reais
+    const cities = [
+      [204.6,273.2], [224.2,239.3], [219.3,240.9], [229.2,267.5],
+      [195.2,200.8], [263.2,173.6], [289.3,127.5], [263.2,87.1],
+      [107.7,81.4],  [190.9,65.5],  [171.3,334.3], [185.1,291.0],
+      [185.1,209.3], [146.7,244.0], [135.9,198.9], [283.5,143.5],
+      [287.1,106.8], [232.1,100.2], [221.3,75.8],  [172.1,52.3],
+      [102.6,26.0],  [79.5,135.0],  [190.9,311.7],
     ];
-    const dots = worldPts.map(([la,lo])=>({
-      ...geo(la,lo),
-      ph:Math.random()*Math.PI*2,
-      sp:.03+Math.random()*.04,
-      sz:.8+Math.random()*1.2,
-      pink:Math.random()>.85
-    }));
 
-    // Itaúna e pontos de origem
-    const dest   = geo(-20.07,-44.57);
-    const origA  = geo(-19.9,-43.9);   // vindo de BH
-    const origB  = geo(-21.5,-46.0);   // interior MG
+    const dotsG = document.getElementById('mpDots');
+    dotsG.innerHTML = '';
+    cities.forEach(([cx,cy]) => {
+      const isNearItauna = Math.hypot(cx-ITAUNA.x, cy-ITAUNA.y) < 15;
+      const c = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      c.setAttribute('cx', cx);
+      c.setAttribute('cy', cy);
+      c.setAttribute('r', isNearItauna ? '2' : '1.2');
+      c.setAttribute('fill', isNearItauna ? '#ff8fa3' : 'rgba(160,200,255,0.6)');
+      c.setAttribute('class','mp-dot');
+      c.style.cssText = `--dur:${1.5+Math.random()*3}s;--delay:${Math.random()*3}s;--min:${(.08+Math.random()*.15).toFixed(2)};--max:${(.4+Math.random()*.45).toFixed(2)};`;
+      dotsG.appendChild(c);
+    });
 
-    // Fases da animação
-    const T_DOTS   = 80;   // dots do mundo piscando
-    const T_TRAVEL = 160;  // viagem até Itaúna
-    const T_ARRIVE = 200;  // chegada — a partir daqui loop infinito
+    const meet  = document.getElementById('mpMeetPoint');
+    const dotA  = document.getElementById('mpDotA');
+    const dotB  = document.getElementById('mpDotB');
+    const lineA = document.getElementById('mpLineA');
+    const lineB = document.getElementById('mpLineB');
 
-    let tick = 0;
-    let arrived = false;  // flag: encontro já aconteceu
+    meet.setAttribute('opacity','0');
+    dotA.setAttribute('opacity','0');
+    dotB.setAttribute('opacity','0');
 
-    function frame() {
-      ctx.clearRect(0,0,W,H);
+    const T_START  = 1000;
+    const T_TRAVEL = 1000;
+    const T_ARRIVE = 3500;
 
-      // estrelas
-      stars.forEach(s=>{
-        ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
-        ctx.fillStyle=`rgba(255,255,255,${s.op})`; ctx.fill();
-      });
+    let start = null;
 
-      // contornos dos continentes
-      drawContinents(ctx, geo, tick);
+    function lerp(a,b,t){ return a+(b-a)*t; }
+    function ease(t){ return t<.5?2*t*t:-1+(4-2*t)*t; }
 
-      // pontos do mundo
-      if (tick >= 10) {
-        const da = Math.min((tick-10)/40,1);
-        dots.forEach(d=>{
-          const pulse=.5+.5*Math.sin(tick*d.sp+d.ph);
-          const al=da*(.3+.5*pulse);
-          const r=d.sz*(.6+.4*pulse);
-          ctx.beginPath(); ctx.arc(d.x,d.y,r*(d.pink?1.8:1),0,Math.PI*2);
-          ctx.fillStyle=d.pink?`rgba(255,77,109,${al*.4})`:`rgba(180,200,255,${al})`;
-          ctx.fill();
-          if (d.pink) {
-            ctx.beginPath(); ctx.arc(d.x,d.y,r,0,Math.PI*2);
-            ctx.fillStyle=`rgba(255,150,170,${al})`; ctx.fill();
-          }
-        });
+    function frame(ts) {
+      if (!start) start = ts;
+      const el = ts - start;
+
+      if (el > T_START) {
+        dotA.setAttribute('opacity','1');
+        dotB.setAttribute('opacity','1');
       }
 
-      // viagem dos dois pontos
-      if (tick >= T_DOTS && tick < T_ARRIVE) {
-        const tp = Math.min((tick-T_DOTS)/(T_TRAVEL-T_DOTS),1);
-        const e  = easeInOut(tp);
-        const ax = origA.x+(dest.x-origA.x)*e, ay = origA.y+(dest.y-origA.y)*e;
-        const bx = origB.x+(dest.x-origB.x)*e, by = origB.y+(dest.y-origB.y)*e;
-        drawTravelDot(ctx,ax,ay,'#ff4d6d',tp);
-        drawTravelDot(ctx,bx,by,'#ffb3c0',tp);
-        if (tp>.7) {
-          const la=(tp-.7)/.3;
-          ctx.beginPath(); ctx.moveTo(ax,ay); ctx.lineTo(bx,by);
-          ctx.strokeStyle=`rgba(255,77,109,${la*.55})`;
-          ctx.lineWidth=1; ctx.setLineDash([3,4]); ctx.stroke(); ctx.setLineDash([]);
-        }
+      if (el > T_START && el < T_ARRIVE) {
+        const t = Math.min((el - T_START) / (T_ARRIVE - T_START - T_TRAVEL), 1);
+        const e = ease(t);
+        const ax = lerp(SP.x, ITAUNA.x, e);
+        const ay = lerp(SP.y, ITAUNA.y, e);
+        const bx = lerp(BH.x, ITAUNA.x, e);
+        const by = lerp(BH.y, ITAUNA.y, e);
+        dotA.setAttribute('cx',ax); dotA.setAttribute('cy',ay);
+        dotB.setAttribute('cx',bx); dotB.setAttribute('cy',by);
+        lineA.setAttribute('x2',ax); lineA.setAttribute('y2',ay);
+        lineB.setAttribute('x2',bx); lineB.setAttribute('y2',by);
       }
 
-      // encontro — pulsa indefinidamente até toque
-      if (tick >= T_ARRIVE) {
-        if (!arrived) {
-          arrived = true;
-          // mostra hint de toque
-          const hint = document.getElementById('mpMapHint');
-          if (hint) { hint.textContent = 'toque para continuar'; }
-        }
-        drawMeetPoint(ctx, dest.x, dest.y, 1, tick);
-        // também mantém os dots do mundo piscando
-        dots.forEach(d=>{
-          const pulse=.5+.5*Math.sin(tick*d.sp+d.ph);
-          const al=.3+.5*pulse;
-          const r=d.sz*(.6+.4*pulse);
-          ctx.beginPath(); ctx.arc(d.x,d.y,r,0,Math.PI*2);
-          ctx.fillStyle=d.pink?`rgba(255,150,170,${al*.6})`:`rgba(180,200,255,${al*.5})`;
-          ctx.fill();
-        });
-        // label Itaúna
-        ctx.font=`bold 11px 'Segoe UI'`;
-        ctx.fillStyle='rgba(255,255,255,.9)';
-        ctx.textAlign='center';
-        ctx.fillText('Itaúna — MG', dest.x, dest.y-18);
+      if (el >= T_ARRIVE) {
+        dotA.setAttribute('opacity','0');
+        dotB.setAttribute('opacity','0');
+        lineA.setAttribute('x2', lineA.getAttribute('x1'));
+        lineA.setAttribute('y2', lineA.getAttribute('y1'));
+        lineB.setAttribute('x2', lineB.getAttribute('x1'));
+        lineB.setAttribute('y2', lineB.getAttribute('y1'));
+        meet.setAttribute('opacity','1');
+        const btn = document.getElementById('mpBtn');
+        if (btn) btn.style.opacity='1';
+        cancelAnimationFrame(animId);
+        return;
       }
 
-      tick++;
-      // Roda sempre — loop infinito após o encontro
-      mapAnim = requestAnimationFrame(frame);
+      animId = requestAnimationFrame(frame);
     }
-    mapAnim = requestAnimationFrame(frame);
+    animId = requestAnimationFrame(frame);
   }
 
-  function drawTravelDot(ctx,x,y,color,prog) {
-    ctx.beginPath(); ctx.arc(x,y,8,0,Math.PI*2);
-    ctx.fillStyle=`rgba(255,77,109,${.28*prog})`; ctx.fill();
-    ctx.beginPath(); ctx.arc(x,y,3,0,Math.PI*2);
-    ctx.fillStyle=color; ctx.fill();
-  }
-
-  function drawMeetPoint(ctx,x,y,prog,tick) {
-    // 3 anéis expandindo em loop
-    [0,1,2].forEach(i=>{
-      const rp=((tick*.03+i*.33)%1);
-      const r=rp*26;
-      const a=(1-rp)*.7*prog;
-      ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2);
-      ctx.strokeStyle=`rgba(255,77,109,${a})`;
-      ctx.lineWidth=1.4; ctx.stroke();
-    });
-    // ponto central pulsante
-    const pulse=.85+.15*Math.sin(tick*.08);
-    const pg=ctx.createRadialGradient(x,y,0,x,y,9*pulse);
-    pg.addColorStop(0,`rgba(255,100,130,${prog})`);
-    pg.addColorStop(1,'rgba(255,77,109,0)');
-    ctx.beginPath(); ctx.arc(x,y,9*pulse,0,Math.PI*2);
-    ctx.fillStyle=pg; ctx.fill();
-    ctx.beginPath(); ctx.arc(x,y,3.5,0,Math.PI*2);
-    ctx.fillStyle=`rgba(255,255,255,${prog})`; ctx.fill();
-  }
-
-  function easeInOut(t){ return t<.5?2*t*t:-1+(4-2*t)*t; }
-
-  function drawContinents(ctx, geo, tick) {
-    const alpha=Math.min(tick/30,1)*.18;
-    if (alpha<=0) return;
-    ctx.strokeStyle=`rgba(100,160,255,${alpha})`;
-    ctx.lineWidth=.7; ctx.lineJoin='round';
-    const shapes = [
-      // América do Sul
-      [[-5,-35],[-10,-37],[-15,-39],[-23,-43],[-33,-52],[-35,-58],[-40,-62],[-52,-68],[-55,-65],[-53,-71],[-45,-73],[-30,-71],[-18,-70],[-5,-81],[-2,-80],[5,-77],[8,-77],[10,-63],[8,-60],[6,-55],[4,-52],[2,-50],[0,-50],[5,-53],[8,-35],[-5,-35]],
-      // América do Norte
-      [[60,-140],[70,-130],[72,-100],[70,-70],[60,-65],[47,-53],[44,-66],[35,-75],[30,-80],[25,-80],[20,-87],[15,-85],[8,-77],[10,-75],[5,-77],[10,-63],[15,-60],[18,-66],[25,-77],[30,-80],[25,-90],[22,-97],[20,-105],[23,-110],[30,-110],[32,-117],[38,-122],[48,-124],[50,-127],[55,-130],[60,-140]],
-      // Europa
-      [[36,28],[41,28],[45,30],[46,37],[42,42],[43,45],[47,40],[52,42],[58,38],[60,28],[64,26],[70,25],[71,28],[65,33],[69,33],[68,22],[63,15],[57,8],[54,8],[52,4],[51,-1],[48,-5],[43,-9],[36,-9],[36,-6],[37,0],[39,3],[41,2],[43,5],[44,8],[44,12],[40,18],[38,16],[38,22],[40,24],[36,28]],
-      // África
-      [[37,10],[32,32],[22,37],[12,44],[5,40],[-10,40],[-18,35],[-26,33],[-34,27],[-34,18],[-28,15],[-20,12],[-10,13],[-5,8],[0,8],[5,2],[4,-3],[5,-5],[4,-9],[5,-14],[10,-16],[14,-17],[16,-16],[14,-12],[10,-15],[5,-9],[0,-8],[-1,-10],[-4,-16],[-4,-38],[-10,-40],[-17,-37],[-22,-35],[-28,-33],[-34,-27],[-34,18],[37,10]],
-      // Ásia
-      [[70,30],[70,60],[72,80],[68,90],[65,100],[60,100],[55,95],[52,140],[48,142],[45,135],[38,130],[35,125],[30,120],[22,115],[20,110],[10,104],[1,104],[-5,105],[-8,115],[-8,125],[1,110],[8,98],[13,100],[18,102],[22,98],[23,90],[22,88],[20,86],[20,78],[22,72],[22,68],[25,62],[28,60],[32,47],[38,42],[36,37],[37,28],[41,28],[46,37],[47,40],[52,42],[58,38],[60,28],[64,26],[70,25],[70,30]],
-      // Oceania
-      [[-16,136],[-14,130],[-18,122],[-22,114],[-28,114],[-32,116],[-35,117],[-38,146],[-38,148],[-34,151],[-28,154],[-22,150],[-18,146],[-16,145],[-12,136],[-16,136]],
-    ];
-    shapes.forEach(coords=>{
-      ctx.beginPath();
-      coords.forEach(([la,lo],i)=>{
-        const {x,y}=geo(la,lo);
-        i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
-      });
-      ctx.stroke();
-    });
-  }
-
-  // ─── FASES ───
   function showPhase(id) {
-    ['mpIntro','mpMap','mpEnd'].forEach(pid=>{
-      const el=document.getElementById(pid);
+    ['mpIntro','mpMap','mpEnd'].forEach(pid => {
+      const el = document.getElementById(pid);
       if (!el) return;
-      pid===id?el.classList.remove('mp-hide'):el.classList.add('mp-hide');
+      pid===id ? el.classList.remove('mp-hide') : el.classList.add('mp-hide');
       if (pid===id) void el.offsetWidth;
     });
   }
@@ -1131,11 +999,12 @@ function wmpEndMsg(s, t) {
   function advance() {
     if (phase===0) {
       phase=1;
+      document.getElementById('mpBtn').style.opacity='0';
       showPhase('mpMap');
-      setTimeout(drawMap,100);
+      setTimeout(animateMap, 400);
     } else if (phase===1) {
       phase=2;
-      if (mapAnim) { cancelAnimationFrame(mapAnim); mapAnim=null; }
+      if (animId) { cancelAnimationFrame(animId); animId=null; }
       document.getElementById('mpBtn').classList.add('mp-hide');
       setTimeout(()=>showPhase('mpEnd'),300);
     }
