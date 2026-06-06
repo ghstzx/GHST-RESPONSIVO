@@ -1119,18 +1119,20 @@ function wmpEndMsg(s, t) {
     setTimeout(() => {
       if (tap) { tap.style.transition = 'opacity .6s ease'; tap.style.opacity = '1'; }
     }, 3400);
+    centerBtn.style.opacity = '1';
   }
 
   // ─── Avança fases ao clicar no botão ───
   function constAdvance() {
     if (constPhase === 0) {
       constPhase = 1;
+      centerBtn.style.opacity = '0';
       showConstPhase('constMap');
       drawConstellation();
     } else if (constPhase === 1) {
       constPhase = 2;
       if (constAnim) { cancelAnimationFrame(constAnim); constAnim = null; }
-      centerBtn.classList.add('hidden');
+      centerBtn.style.opacity = '0';
       setTimeout(() => showConstPhase('constEnd'), 300);
     }
   }
